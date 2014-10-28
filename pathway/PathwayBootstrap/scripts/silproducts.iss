@@ -1,5 +1,13 @@
 #include "isxdl\isxdl.iss"
 #include "products\dotnetfxversion.iss"
+
+#define MyAppURL "http://pathway.sil.org/wp-content/uploads/"
+#define StableExeName "SetupPw7BTE-1.12.0.4302.msi"
+#define LatestExeName "SetupPw7BTETesting-1.12.0.4302.msi"
+
+[Files]
+Source: "scripts\PathwayLogo.bmp"; DestDir: "{app}"; DestName: "PathwayLogo.bmp";
+Source: "scripts\License.rtf"; DestDir: "{app}"; DestName: "License.rtf";
 [CustomMessages]
 DependenciesDir=MyProgramDependencies
 
@@ -38,8 +46,17 @@ jre6_title=Java Runtime Environment 6
 jre6_size=10 MB
 epub_title=Calibre Epub file viewer  
 epub_size=59.3 MB
-epub_title= PDF-XChange Viewer  
-epub_size=16 MB
+stable_title=Pathway Stable  
+stable_size=18 MB
+latest_title=Pathway Latest  
+latest_size=20 MB
+pdfViewer_title=Xchange PdfViewer  
+pdfViewer_size=16.1 MB
+princeXml_title=PrinceXML
+princeXml_size=10.9 MB
+xelatex_title=Xelatex
+xelatex_size=96.4 MB
+
 
 [Code]
 
@@ -71,8 +88,12 @@ type
   java64bit_url = 'http://javadl.sun.com/webapps/download/AutoDL?BundleId=98428';
   jre6_url = 'http://javadl.sun.com/webapps/download/AutoDL?BundleId=32267';
   epub_url = 'http://status.calibre-ebook.com/dist/win32';
-  pdfViewer_url = 'http://www.tracker-software.com/downloads/PDFXVwer.exe?key=f9613790ade54b9e6e5e1151659fd541';
-
+  pdfViewer_url = 'http://34e34375d0b7c22eafcf-c0a4be9b34fe09958cbea1670de70e9b.r87.cf1.rackcdn.com/PDFXVwer.exe';
+  princeXml_url = 'http://www.princexml.com/download/prince-9.0r5-setup.exe';
+  xelatex_url = 'http://pathway.sil.org/wp-content/sprint/SetupXeLaTeXTesting-1.10.0.3926.msi';
+  
+  stable_url='{#MyAppURL}/{#StableExeName}';
+  Latest_url='{#MyAppURL}/{#LatestExeName}';
 procedure AddProduct(FileName, Parameters, Title, Size, URL: string; InstallClean : boolean; MustRebootAfter : boolean);
 var
 	path: string;
@@ -141,14 +162,88 @@ begin
 	end;
 end;
 
+
+function DotNetFrameworkInstalled(showError: boolean): boolean;
+var
+	version: string;
+begin
+  RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\.NETFramework\Policy\v2.0', '50727', version);
+	Result := version <> '';  
+	if not result and showError then SuppressibleMsgBox(CustomMessage('NoDotNetFrameworkFatal'), mbError, MB_OK, MB_OK);
+end;
+
+function LibreOfficeInstalled(showError: boolean): boolean;
+var
+	version: string;
+begin
+  RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\LibreOffice\UNO\InstallPath', '', version);
+	Result := version <> '';  
+	if not result and showError then SuppressibleMsgBox(CustomMessage('NoLibreOfficeFatal'), mbError, MB_OK, MB_OK);
+end;
+
+function CalibreInstalled(showError: boolean): boolean;
+var
+	version: string;
+begin
+  RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\calibre\Installer', 'InstallPath', version);
+	Result := version <> '';  
+	if not result and showError then SuppressibleMsgBox(CustomMessage('NoCalibreFatal'), mbError, MB_OK, MB_OK);
+end;
+
+function PDFXChangeViewerInstalled(showError: boolean): boolean;
+var
+	version: string;
+begin
+  RegQueryStringValue(HKLM, 'SOFTWARE\Tracker Software\PDFViewer', 'InstallPath', version);
+	Result := version <> '';  
+	if not result and showError then SuppressibleMsgBox(CustomMessage('NoPDFXChangeViewerFatal'), mbError, MB_OK, MB_OK);
+end;
+
+function PrinceXmlInstalled(showError: boolean): boolean;
+var
+	version: string;
+begin
+  RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Prince_is1', 'InstallLocation', version);
+	Result := version <> ''; 
+  
+  if not Result then begin
+    RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Prince_is1', 'InstallLocation', version);	
+    Result := version <> '';  
+  end;
+  
+  if not Result then begin
+    RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{3AC28E9C-8F06-4E2C-ADDA-726E2230A03A}', 'InstallLocation', version);	
+    Result := version <> '';    
+  end;
+
+  if not Result then begin
+    RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{3AC28E9C-8F06-4E2C-ADDA-726E2230A03A}', 'InstallLocation', version);	
+    Result := version <> '';
+  end;
+
+	if not result and showError then SuppressibleMsgBox(CustomMessage('NoPrinceXmlFatal'), mbError, MB_OK, MB_OK);
+end;
+
+function XelatexInstalled(showError: boolean): boolean;
+var
+	version: string;
+begin
+  RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\SIL\PathwayXeLaTeX', 'XeLaTexVer', version);
+	Result := version <> ''; 
+  
+  {MsgBox(version, mbError, MB_OK);}
+	if not result and showError then SuppressibleMsgBox(CustomMessage('NoXelatexFatal'), mbError, MB_OK, MB_OK);
+end;
+
 function JREinstalled(showError: boolean): boolean;
 var
 	version: string;
 begin
-  RegQueryStringValue(HKLM, 'SOFTWARE\JavaSoft\Java Runtime Environment', 'CurrentVersion', version);
-	Result := version >= '1.5';
+  RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment', 'CurrentVersion', version);
+	Result := version >= '1.5';  
 	if not result and showError then SuppressibleMsgBox(CustomMessage('NoJREFatal'), mbError, MB_OK, MB_OK);
 end;
+                          
 
 procedure checkJRE();
 begin
@@ -293,7 +388,7 @@ var
   VersionPage: TInputOptionWizardPage;
   DependenPage: TInputOptionWizardPage;  
   BitmapImage, BitmapImage2, BitmapImage3,BackgroundBitmapImage: TBitmapImage;
-  BitmapFileName,richtextstring: String;
+  BitmapFileName,richtextstring,LicenseFileName: String;
   BackgroundBitmapText: TNewStaticText;
   ImproveCheckBox,AgreeCheckBox:TNewCheckBox;
   IsRegisteredUser: Boolean;
@@ -327,20 +422,23 @@ LicensePage := CreateCustomPage(wpWelcome,
   RichEditViewer.Parent := LicensePage.Surface;
   RichEditViewer.ScrollBars := ssVertical;
   RichEditViewer.UseRichEdit := True;
-   VersionFile :='License.rtf'; 
+  LicenseFileName:= ExpandConstant('{tmp}\License.rtf');
+  ExtractTemporaryFile(ExtractFileName(LicenseFileName));
+   VersionFile :=LicenseFileName; 
    LoadStringFromFile(VersionFile, VersionValue)
   RichEditViewer.RTFText:= VersionValue;
   {RichEditViewer.ReadOnly := True;}
   AgreeCheckBox:= TNewCheckBox.Create(LicensePage);
   AgreeCheckBox.Caption:='Yes, I accept the terms and conditions';
-  AgreeCheckBox.Checked:=True;
+  AgreeCheckBox.Checked:=False;
   AgreeCheckBox.Parent:=LicensePage.Surface;
   AgreeCheckBox.Top := RichEditViewer.Height+10;
   AgreeCheckBox.Width:=280;
   AgreeCheckBox.OnClick := @CheckBoxOnClick; 
   { Create the pages }
   Page := CreateCustomPage(LicensePage.ID, 'Improve', '');   
-  BitmapFileName :='PathwayLogo.bmp';
+  BitmapFileName :=ExpandConstant('{tmp}\PathwayLogo.bmp');
+  ExtractTemporaryFile(ExtractFileName(BitmapFileName));
   BitmapImage := TBitmapImage.Create(Page);
   BitmapImage.AutoSize := False;
   BitmapImage.Stretch := True;
@@ -376,9 +474,14 @@ LicensePage := CreateCustomPage(wpWelcome,
   UserPage.Add('Name:', False);
   UserPage.Add('Company:', False);
   UserPage.Add('Email:', False);
-
-
-   DependenPage := CreateInputOptionPage(UserPage.ID,
+  VersionPage := CreateInputOptionPage(UserPage.ID,
+    'Version Information', 'Which version of Pathway would you like to install?',
+    'Please select any one Pathway Version Option, then click Next.',
+    True, False);
+  VersionPage.Add('Stable');
+  VersionPage.Add('Latest');
+                 
+   DependenPage := CreateInputOptionPage(VersionPage.ID,
     'Dependency Information', 'Do you have all the dependencies installed in your computer?',
     'After analyzing what is available in your computer, Pathway bootstrap will download and install the following applications.',
     False, False);
@@ -389,18 +492,9 @@ LicensePage := CreateCustomPage(wpWelcome,
     DependenPage.Add('PDF reader');
     DependenPage.Add('PrinceXML(XHTML to PDF)');
     DependenPage.Add('XeLaTeX(typesetting)');
-
-
-	  VersionPage := CreateInputOptionPage(DependenPage.ID,
-    'Version Information', 'Which version of Pathway would you like to install?',
-    'Please select any one Pathway Version Option, then click Next.',
-    True, False);
-  VersionPage.Add('Stable');
-  VersionPage.Add('Latest');
-  
-  
-
-
+           
+    DependenPage.Values[0] := True;
+    
   { Set default values, using settings that were stored last time if possible }
 
   UserPage.Values[0] := GetPreviousData('Name', ExpandConstant('{sysuserinfoname}'));
@@ -443,9 +537,8 @@ end;
 procedure CallDownload;
 begin
 
-    RemoveProducts();  
-
-
+      RemoveProducts();   
+      
       if DependenPage.Values[0] then begin            
            if (not netfxinstalled(NetFx20, '')) then
               AddProduct('dotnetfx20' + GetArchitectureString() + '.exe',
@@ -453,6 +546,22 @@ begin
                 CustomMessage('dotnetfx20_title'),
                 CustomMessage('dotnetfx20_size'),
                 GetString(dotnetfx20_url, dotnetfx20_url_x64, dotnetfx20_url_ia64),
+                false, false);
+      end;
+      if VersionPage.Values[0]  then begin
+      AddProduct('{#StableExeName}',
+                '/passive /norestart',
+                CustomMessage('stable_title'),
+                CustomMessage('stable_size'),
+                stable_url,
+                false, false);
+      end;
+      if VersionPage.Values[1]  then begin
+      AddProduct('{#LatestExeName}',
+                '/passive /norestart',
+                CustomMessage('latest_title'),
+                CustomMessage('latest_size'),
+                Latest_url,
                 false, false);
       end;
       if DependenPage.Values[1] then begin
@@ -475,13 +584,28 @@ begin
                 false, false);
       end;
       if DependenPage.Values[4] then begin
-             MsgBox('You must enter your name. PDF reader', mbError, MB_OK);
+           AddProduct('PDFXVwer.exe',
+                      '/passive /norestart',
+                      CustomMessage('pdfViewer_title'),
+                      CustomMessage('pdfViewer_size'),
+                      pdfViewer_url,
+                      false, false);                  
       end;
       if DependenPage.Values[5] then begin
-             MsgBox('You must enter your name. Prince Pdf', mbError, MB_OK);
+          AddProduct('prince-9.0r5-setup.exe',
+                      '/passive /norestart',
+                      CustomMessage('princeXml_title'),
+                      CustomMessage('princeXml_size'),
+                      princeXml_url,
+                      false, false);   
       end;
       if DependenPage.Values[6] then begin
-             MsgBox('You must enter your name. XeLaTeX', mbError, MB_OK);
+           AddProduct('SetupXeLaTeXTesting-1.10.0.3926.msi',
+                '/passive /norestart',
+                CustomMessage('xelatex_title'),
+                CustomMessage('xelatex_size'),
+                xelatex_url,
+                false, false); 
       end;
 	  
 end;
@@ -515,12 +639,42 @@ begin
   end else
     Result := True;
 end;
+procedure CurPageChanged(CurPageID: Integer);
+var
+	i: Integer;
+begin
+  if CurPageID = LicensePage.ID then begin
+  WizardForm.NextButton.Enabled:=AgreeCheckBox.checked;
+  end;
+  if CurPageID = DependenPage.ID then begin   
 
-
-
+    if DotNetFrameworkInstalled(false) then begin
+        DependenPage.CheckListBox.ItemEnabled[0]:=false;
+        DependenPage.Values[0] := False;
+    end;
+    if JREinstalled(false) then begin
+        DependenPage.CheckListBox.ItemEnabled[1]:=false;
+    end;
+    if LibreOfficeInstalled(false) then begin
+        DependenPage.CheckListBox.ItemEnabled[2]:=false;
+    end;
+    if CalibreInstalled(false) then begin
+        DependenPage.CheckListBox.ItemEnabled[3]:=false;
+    end;
+    if PDFXChangeViewerInstalled(false) then begin
+        DependenPage.CheckListBox.ItemEnabled[4]:=false;
+    end;
+    if PrinceXmlInstalled(false) then begin
+        DependenPage.CheckListBox.ItemEnabled[5]:=false;
+    end;                                           
+    if XelatexInstalled(false) then begin
+        DependenPage.CheckListBox.ItemEnabled[6]:=false;
+    end;                                       
+  end;
+end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;
-begin     
+begin 
   if PageID = UserPage.ID then begin
       if ImproveCheckBox.Checked = False then begin
       Result:=True;
