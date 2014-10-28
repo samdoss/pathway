@@ -550,7 +550,7 @@ begin
       end;
       if VersionPage.Values[0]  then begin
       AddProduct('{#StableExeName}',
-                '/passive /norestart',
+                '/norestart',
                 CustomMessage('stable_title'),
                 CustomMessage('stable_size'),
                 stable_url,
@@ -558,7 +558,7 @@ begin
       end;
       if VersionPage.Values[1]  then begin
       AddProduct('{#LatestExeName}',
-                '/passive /norestart',
+                '/norestart',
                 CustomMessage('latest_title'),
                 CustomMessage('latest_size'),
                 Latest_url,
@@ -593,7 +593,7 @@ begin
       end;
       if DependenPage.Values[5] then begin
           AddProduct('prince-9.0r5-setup.exe',
-                      '/passive /norestart',
+                      '/norestart',
                       CustomMessage('princeXml_title'),
                       CustomMessage('princeXml_size'),
                       princeXml_url,
