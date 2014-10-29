@@ -393,7 +393,7 @@ var
   ImproveCheckBox,AgreeCheckBox:TNewCheckBox;
   IsRegisteredUser: Boolean;
   RichEditViewer : TRichEditViewer;
-  VersionValue: string;
+  VersionValue: AnsiString;
   VersionFile: string; 
     
   procedure CheckBoxOnClick(Sender : TObject);
@@ -424,8 +424,8 @@ LicensePage := CreateCustomPage(wpWelcome,
   RichEditViewer.UseRichEdit := True;
   LicenseFileName:= ExpandConstant('{tmp}\License.rtf');
   ExtractTemporaryFile(ExtractFileName(LicenseFileName));
-   VersionFile :=LicenseFileName; 
-   LoadStringFromFile(VersionFile, VersionValue)
+   VersionFile :=LicenseFileName;
+   LoadStringFromFile(VersionFile, VersionValue);
   RichEditViewer.RTFText:= VersionValue;
   {RichEditViewer.ReadOnly := True;}
   AgreeCheckBox:= TNewCheckBox.Create(LicensePage);
