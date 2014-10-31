@@ -53,7 +53,7 @@ latest_size=20 MB
 pdfViewer_title=Xchange PdfViewer  
 pdfViewer_size=16.1 MB
 princeXml_title=PrinceXML
-princeXml_size=10.9 MB
+princeXml_size=10.8 MB
 xelatex_title=Xelatex
 xelatex_size=96.4 MB
 
@@ -90,10 +90,10 @@ type
   epub_url = 'http://status.calibre-ebook.com/dist/win32';
   pdfViewer_url = 'http://34e34375d0b7c22eafcf-c0a4be9b34fe09958cbea1670de70e9b.r87.cf1.rackcdn.com/PDFXVwer.exe';
   princeXml_url = 'http://www.princexml.com/download/prince-9.0r5-setup.exe';
-  xelatex_url = 'http://pathway.sil.org/wp-content/sprint/SetupXeLaTeXTesting-1.10.0.3926.msi';
-  
+  xelatex_url = 'http://pathway.sil.org/wp-content/sprint/SetupXeLaTeXTesting-1.10.0.3926.msi';     
   stable_url='{#MyAppURL}/{#StableExeName}';
   Latest_url='{#MyAppURL}/{#LatestExeName}';
+
 procedure AddProduct(FileName, Parameters, Title, Size, URL: string; InstallClean : boolean; MustRebootAfter : boolean);
 var
 	path: string;
@@ -143,10 +143,10 @@ end;
 
 function SmartExec(prod : TProduct; var ResultCode : Integer) : boolean;
 begin
-	if (LowerCase(Copy(prod.File,Length(prod.File)-2,3)) = 'exe') then begin
-		Result := Exec(prod.File, prod.Parameters, '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
-	end else begin
-		Result := ShellExec('', prod.File, prod.Parameters, '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
+	if (LowerCase(Copy(prod.File,Length(prod.File)-2,3)) = 'exe') then begin    
+		Result := Exec(prod.File, prod.Parameters, '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);             
+	end else begin    
+		Result := ShellExec('', prod.File, prod.Parameters, '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);    
 	end;
 end;
 
@@ -290,11 +290,10 @@ begin
 					delayedReboot := true;
 					finishCount := finishCount + 1;
 				end else begin
-					Result := InstallError;
+					Result := InstallError;          
 					break;
 				end;
-			end else begin
-				//MsgBox(products[i].Title + ' install failed. Result Code: ' + IntToStr(ResultCode), mbInformation, MB_OK);
+			end else begin				
 				Result := InstallError;
 				break;
 			end;
@@ -548,22 +547,7 @@ begin
                 GetString(dotnetfx20_url, dotnetfx20_url_x64, dotnetfx20_url_ia64),
                 false, false);
       end;
-      if VersionPage.Values[0]  then begin
-      AddProduct('{#StableExeName}',
-                '/norestart',
-                CustomMessage('stable_title'),
-                CustomMessage('stable_size'),
-                stable_url,
-                false, false);
-      end;
-      if VersionPage.Values[1]  then begin
-      AddProduct('{#LatestExeName}',
-                '/norestart',
-                CustomMessage('latest_title'),
-                CustomMessage('latest_size'),
-                Latest_url,
-                false, false);
-      end;
+      
       if DependenPage.Values[1] then begin
              checkJRE();
       end;
@@ -593,7 +577,7 @@ begin
       end;
       if DependenPage.Values[5] then begin
           AddProduct('prince-9.0r5-setup.exe',
-                      '/norestart',
+                      '',
                       CustomMessage('princeXml_title'),
                       CustomMessage('princeXml_size'),
                       princeXml_url,
@@ -606,6 +590,22 @@ begin
                 CustomMessage('xelatex_size'),
                 xelatex_url,
                 false, false); 
+      end;
+      if VersionPage.Values[0]  then begin
+      AddProduct('{#StableExeName}',
+                '/norestart',
+                CustomMessage('stable_title'),
+                CustomMessage('stable_size'),
+                stable_url,
+                false, false);
+      end;
+      if VersionPage.Values[1]  then begin
+      AddProduct('{#LatestExeName}',
+                '/norestart',
+                CustomMessage('latest_title'),
+                CustomMessage('latest_size'),
+                Latest_url,
+                false, false);
       end;
 	  
 end;
