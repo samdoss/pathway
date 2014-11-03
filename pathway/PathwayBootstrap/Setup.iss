@@ -16,10 +16,12 @@ AppPublisher=SIL International
 AppID={{F768F6BA-F164-4599-BC26-DCCFC2F76855}
 OutputBaseFilename={#MyAppSetupName}-{#MyAppVersion}
 DefaultGroupName={#MyAppSetupName}
-DefaultDirName={pf}\{#MyAppSetupName}
-UninstallDisplayIcon={app}\PathwayBootstrap.exe
+DefaultDirName={pf32}\SIL\Pathway7
+DisableDirPage=yes
+;DefaultDirName={pf}\{#MyAppSetupName}
+;UninstallDisplayIcon={app}\PathwayBootstrap.exe
 OutputDir=bin
-SourceDir=.
+;SourceDir=.
 AllowNoIcons=yes
 ;SetupIconFile=PathwayBootstrapIcon
 SolidCompression=yes
@@ -35,21 +37,6 @@ ArchitecturesInstallIn64BitMode=x64 ia64
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"
-
-[Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-
-;[Files]
-;Source: "src\PathwayBootstrap-x64.exe"; DestDir: "{app}"; DestName: "PathwayBootstrap.exe"; Check: IsX64
-;Source: "src\PathwayBootstrap-IA64.exe"; DestDir: "{app}"; DestName: "PathwayBootstrap.exe"; Check: IsIA64
-;Source: "src\PathwayBootstrap.exe"; DestDir: "{app}"; Check: not Is64BitInstallMode
-
-[Icons]
-Name: "{group}\PathwayBootstrap"; Filename: "{app}\PathwayBootstrap"
-Name: "{group}\{cm:UninstallProgram,PathwayBootstrap}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\PathwayBootstrap"; Filename: "{app}\PathwayBootstrap.exe"; Tasks: desktopicon
-Name: "{userappdata}\SIL\Pathway\PathwayBootstrap"; Filename: "{app}\PathwayBootstrap.exe"; Tasks: quicklaunchicon
 
 
 [Registry]

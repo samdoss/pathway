@@ -549,9 +549,8 @@ begin
       end;
       
       if DependenPage.Values[1] then begin
-             {checkJRE();}
              AddProduct('jre6.exe',
-                '/norestart',
+                '',
                 CustomMessage('jre6_title'),
                 CustomMessage('jre6_size'),
                 jre6_url,
@@ -711,7 +710,7 @@ begin
   S := S + NewLine + NewLine;
   
   S := S + MemoDirInfo + NewLine;
-  S := S + Space + ' (personal data files)' + NewLine;
+  {S := S + Space + ' (personal data files)' + NewLine;}
 
   Result := S;
 end;
