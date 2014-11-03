@@ -549,7 +549,13 @@ begin
       end;
       
       if DependenPage.Values[1] then begin
-             checkJRE();
+             {checkJRE();}
+             AddProduct('jre6.exe',
+                '/norestart',
+                CustomMessage('jre6_title'),
+                CustomMessage('jre6_size'),
+                jre6_url,
+                false, false);
       end;
       if DependenPage.Values[2] then begin
              AddProduct('LibreOffice_4.3.2_Win_x86.msi',
