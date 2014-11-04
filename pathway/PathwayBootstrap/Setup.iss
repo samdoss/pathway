@@ -66,7 +66,7 @@ RegQueryStringValue(HKEY_LOCAL_MACHINE,
 'DisplayVersion', oldVersion);
 if (CompareVersion(oldVersion, '10.0.0.4006') < 0) then
 begin
-if MsgBox('Version ' + oldVersion + ' of Code Beautifier Collection is already installed. Continue to use this old version?',
+if MsgBox('Version ' + oldVersion + ' of Pathway Bootstrap is already installed. Continue to use this old version?',
 mbConfirmation, MB_YESNO) = IDYES then
 begin
 Result := False;
@@ -82,7 +82,7 @@ end;
 end
 else
 begin
-MsgBox('Version ' + oldVersion + ' of Code Beautifier Collection is already installed. This installer will exit.',
+MsgBox('Version ' + oldVersion + ' of Pathway Bootstrap is already installed. This installer will exit.',
 mbInformation, MB_OK);
 Result :=True;
 end;

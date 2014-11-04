@@ -2,8 +2,10 @@
 #include "products\dotnetfxversion.iss"
 
 #define MyAppURL "http://pathway.sil.org/wp-content/uploads/"
-#define StableExeName "SetupPw7BTE-1.12.0.4302.msi"
-#define LatestExeName "SetupPw7BTETesting-1.12.0.4302.msi"
+#define StableBTEExeName "SetupPw7BTE-1.12.0.4302.msi"
+#define LatestBTEExeName "SetupPw7BTETesting-1.12.0.4302.msi"
+#define StableSEExeName "SetupPw7SE-1.12.0.4302.msi"
+#define LatestSEExeName "SetupPw7SETesting-1.12.0.4302.msi"
 
 [Files]
 Source: "scripts\PathwayLogo.bmp"; DestDir: "{app}"; DestName: "PathwayLogo.bmp";
@@ -46,10 +48,14 @@ jre6_title=Java Runtime Environment 6
 jre6_size=10 MB
 epub_title=Calibre Epub file viewer  
 epub_size=59.3 MB
-stable_title=Pathway Stable  
-stable_size=18 MB
-latest_title=Pathway Latest  
-latest_size=20 MB
+stable_BTE_title=Pathway BTE Stable  
+stable_BTE_size=18 MB
+latest_BTE_title=Pathway BTE Latest  
+latest_BTE_size=20 MB
+stable_SE_title=Pathway SE Stable  
+stable_SE_size=27 MB
+latest_SE_title=Pathway SE Latest  
+latest_SE_size=29 MB
 pdfViewer_title=Xchange PdfViewer  
 pdfViewer_size=16.1 MB
 princeXml_title=PrinceXML
@@ -91,8 +97,10 @@ type
   pdfViewer_url = 'http://34e34375d0b7c22eafcf-c0a4be9b34fe09958cbea1670de70e9b.r87.cf1.rackcdn.com/PDFXVwer.exe';
   princeXml_url = 'http://www.princexml.com/download/prince-9.0r5-setup.exe';
   xelatex_url = 'http://pathway.sil.org/wp-content/sprint/SetupXeLaTeXTesting-1.10.0.3926.msi';     
-  stable_url='{#MyAppURL}/{#StableExeName}';
-  Latest_url='{#MyAppURL}/{#LatestExeName}';
+  stable_bte_url='{#MyAppURL}/{#StableBTEExeName}';
+  Latest_bte_url='{#MyAppURL}/{#LatestBTEExeName}';
+  stable_se_url='{#MyAppURL}/{#StableSEExeName}';
+  Latest_se_url='{#MyAppURL}/{#LatestSEExeName}';
 
 procedure AddProduct(FileName, Parameters, Title, Size, URL: string; InstallClean : boolean; MustRebootAfter : boolean);
 var
@@ -532,7 +540,26 @@ begin
    SetArrayLength(products, 0);
    isxdl_ClearFiles();
 end;
-
+function BteVersion(): Boolean;
+begin 
+  if RegKeyExists(HKEY_LOCAL_MACHINE,
+'SOFTWARE\Wow6432Node\ScrChecks\1.0\Settings_Directory') then
+Result := true
+else if  RegKeyExists(HKEY_LOCAL_MACHINE,
+'SOFTWARE\ScrChecks\1.0\Settings_Directory') then
+Result := true
+else if  RegKeyExists(HKEY_LOCAL_MACHINE,
+'SOFTWARE\Wow6432Node\SIL\FieldWorks\7.0') then
+Result := true
+else if  RegKeyExists(HKEY_LOCAL_MACHINE,
+'SOFTWARE\SIL\FieldWorks\7.0') then
+Result := true
+else if  RegKeyExists(HKEY_LOCAL_MACHINE,
+'SOFTWARE\SIL\FieldWorks\8') then
+Result := true
+else
+Result := false;
+end;
 procedure CallDownload;
 begin
 
@@ -596,23 +623,43 @@ begin
                 xelatex_url,
                 false, false); 
       end;
-      if VersionPage.Values[0]  then begin
-      AddProduct('{#StableExeName}',
+      if BteVersion() then begin
+          if VersionPage.Values[0]  then begin
+            AddProduct('{#StableBTEExeName}',
                 '/norestart',
-                CustomMessage('stable_title'),
-                CustomMessage('stable_size'),
-                stable_url,
+                CustomMessage('stable_BTE_title'),
+                CustomMessage('stable_BTE_size'),
+                stable_bte_url,
                 false, false);
-      end;
-      if VersionPage.Values[1]  then begin
-      AddProduct('{#LatestExeName}',
+          end;
+          if VersionPage.Values[1]  then begin
+          AddProduct('{#LatestBTEExeName}',
                 '/norestart',
-                CustomMessage('latest_title'),
-                CustomMessage('latest_size'),
-                Latest_url,
+                CustomMessage('latest_BTE_title'),
+                CustomMessage('latest_BTE_size'),
+                Latest_bte_url,
                 false, false);
-      end;
-	  
+          end
+     end
+     else  begin
+        if VersionPage.Values[0]  then begin
+        AddProduct('{#StableSEExeName}',
+                '/norestart',
+                CustomMessage('stable_SE_title'),
+                CustomMessage('stable_SE_size'),
+                stable_se_url,
+                false, false);
+        end;
+        if VersionPage.Values[1]  then begin
+        AddProduct('{#LatestSEExeName}',
+                '/norestart',
+                CustomMessage('latest_SE_title'),
+                CustomMessage('latest_SE_size'),
+                Latest_se_url,
+                false, false);
+        end;
+      
+      end; 
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
