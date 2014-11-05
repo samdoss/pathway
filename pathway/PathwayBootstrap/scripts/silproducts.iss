@@ -185,7 +185,13 @@ var
 	version: string;
 begin
   RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\LibreOffice\UNO\InstallPath', '', version);
-	Result := version <> '';  
+	Result := version <> '';
+  
+  if not Result then begin
+    RegQueryStringValue(HKLM, 'SOFTWARE\LibreOffice\UNO\InstallPath', '', version);	
+    Result := version <> '';  
+  end;
+    
 	if not result and showError then SuppressibleMsgBox(CustomMessage('NoLibreOfficeFatal'), mbError, MB_OK, MB_OK);
 end;
 
@@ -194,7 +200,13 @@ var
 	version: string;
 begin
   RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\calibre\Installer', 'InstallPath', version);
-	Result := version <> '';  
+	Result := version <> '';
+  
+  if not Result then begin
+    RegQueryStringValue(HKLM, 'SOFTWARE\calibre\Installer', 'InstallPath', version);	
+    Result := version <> '';  
+  end;
+    
 	if not result and showError then SuppressibleMsgBox(CustomMessage('NoCalibreFatal'), mbError, MB_OK, MB_OK);
 end;
 
@@ -203,7 +215,7 @@ var
 	version: string;
 begin
   RegQueryStringValue(HKLM, 'SOFTWARE\Tracker Software\PDFViewer', 'InstallPath', version);
-	Result := version <> '';  
+	Result := version <> '';    
 	if not result and showError then SuppressibleMsgBox(CustomMessage('NoPDFXChangeViewerFatal'), mbError, MB_OK, MB_OK);
 end;
 
@@ -239,6 +251,11 @@ begin
   RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\SIL\PathwayXeLaTeX', 'XeLaTexVer', version);
 	Result := version <> ''; 
   
+  if not Result then begin
+    RegQueryStringValue(HKLM, 'SOFTWARE\SIL\PathwayXeLaTeX', 'XeLaTexVer', version);	
+    Result := version <> '';  
+  end;
+  
   {MsgBox(version, mbError, MB_OK);}
 	if not result and showError then SuppressibleMsgBox(CustomMessage('NoXelatexFatal'), mbError, MB_OK, MB_OK);
 end;
@@ -248,7 +265,13 @@ var
 	version: string;
 begin
   RegQueryStringValue(HKLM, 'SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment', 'CurrentVersion', version);
-	Result := version >= '1.5';  
+	Result := version >= '1.5';
+  
+  if not Result then begin
+    RegQueryStringValue(HKLM, 'SOFTWARE\JavaSoft\Java Runtime Environment', 'CurrentVersion', version);	
+    Result := version >= '1.5';  
+  end;
+    
 	if not result and showError then SuppressibleMsgBox(CustomMessage('NoJREFatal'), mbError, MB_OK, MB_OK);
 end;
                           
