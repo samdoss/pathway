@@ -1920,14 +1920,7 @@ namespace SIL.PublishingSolution
 
 			TableClose();
 
-			if (_isLinux)
-			{
-				SectionClose(_closeChildName);
-			}
-			else
-			{
-				SectionClose(closeChild);
-			}
+			SectionClose(closeChild);
 
 			ClosefooterNote();
 			bool isImageEnd = EndElementForImage();

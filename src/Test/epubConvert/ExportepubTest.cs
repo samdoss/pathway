@@ -15,7 +15,6 @@
 // --------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
@@ -24,7 +23,6 @@ using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
 using SIL.PublishingSolution;
 using SIL.Tool;
-using epubValidator;
 
 namespace Test.epubConvert
 {
@@ -264,7 +262,7 @@ namespace Test.epubConvert
 			//1.19
 			string xPath = "//xhtml:ul[@class='footnotes']/xhtml:li[@id='FN_Footnote-LUK-6']";
 			XmlNode node = resultDoc.SelectSingleNode(xPath, nsmgr);
-			Assert.AreEqual("[b]Bahasa Yunani bilang “Badiri di Allah pung muka”. Ini bisa pung arti ‘Karja par Tuhan’. Mar bisa pung arti lai ‘Badiri di Allah pung muka’. Malekat yang badiri di Allah pung muka pung kuasa labe dari malekat laeng. Jadi, Gabriel bukang malekat biasa.", node.InnerText.Trim());
+			Assert.AreEqual("[b]Bahasa Yunani bilang \x201cBadiri di Allah pung muka\x201d. Ini bisa pung arti \x2018Karja par Tuhan\x2019. Mar bisa pung arti lai \x2018Badiri di Allah pung muka\x2019. Malekat yang badiri di Allah pung muka pung kuasa labe dari malekat laeng. Jadi, Gabriel bukang malekat biasa.", node.InnerText.Trim());
 			//1.27
 			xPath = "//xhtml:ul[@class='footnotes']/xhtml:li[@id='FN_Footnote-LUK-7']";
 			node = resultDoc.SelectSingleNode(xPath, nsmgr);
@@ -395,10 +393,8 @@ namespace Test.epubConvert
 
 			Assert.AreEqual(nodes[0].InnerText, "E e", "Not matched text content");
 
-			if (!Common.UsingMonoVM) {
-				Assert.AreEqual (nodes [1].InnerText, "Entry fr. var. of VariantTest [Tam] Sum1 Green ", "Not matched text content");
-				Assert.AreEqual (nodes [2].InnerText, "Entry fr. var. of VariantTest [Tam] Sum1 Green ", "Not matched text content");
-			}
+			Assert.AreEqual (nodes [1].InnerText, "Entry\x00a0fr. var. of\xa0VariantTest [Tam]\xa0Sum1\xa0Green\xa0", "Not matched text content");
+			Assert.AreEqual (nodes [2].InnerText, "Entry\x00a0fr. var. of\xa0VariantTest [Tam]\xa0Sum1\xa0Green\xa0", "Not matched text content");
 			xmlDocument = Common.DeclareXMLDocument(true);
 			namespaceManager = new XmlNamespaceManager(xmlDocument.NameTable);
 			namespaceManager.AddNamespace("xhtml", "http://www.w3.org/1999/xhtml");
@@ -411,10 +407,8 @@ namespace Test.epubConvert
 			Assert.AreEqual(3, nodes.Count, "Should be 3 divs");
 
 			Assert.AreEqual(nodes[0].InnerText, "T t", "Not matched text content");
-			if (!Common.UsingMonoVM) {
-				Assert.AreEqual (nodes [1].InnerText, "Tested adj Entry (fr. var. of VariantTest [TamTamil] Sum1 Green) ", "Not matched text content");
-				Assert.AreEqual (nodes [2].InnerText, "Tested adj Entry (fr. var. of VariantTest [TamTamil] Sum1 Green) ", "Not matched text content");
-			}
+			Assert.AreEqual (nodes [1].InnerText, "Tested\x00a0adj\x00a0Entry\xa0(fr. var. of\xa0VariantTest [TamTamil]\xa0Sum1\xa0Green) ", "Not matched text content");
+			Assert.AreEqual (nodes [2].InnerText, "Tested\x00a0adj\x00a0Entry\xa0(fr. var. of\xa0VariantTest [TamTamil]\xa0Sum1\xa0Green) ", "Not matched text content");
 
 		}
 
@@ -563,7 +557,7 @@ namespace Test.epubConvert
 			Assert.AreEqual(21, srcNodes.Count);
 			Assert.AreEqual("PartFile00001_.xhtml#gca26b453-4696-4aa1-9e28-1f5121e9b066", srcNodes[2].InnerText);
 			var textNodes = tdoc.SelectNodes("//*[starts-with(@src,'Part')]/preceding-sibling::*[1]/*");
-			Assert.AreEqual("waain ", textNodes[2].InnerText);
+			Assert.AreEqual("waain\xA0", textNodes[2].InnerText);
 			tdoc.DocumentElement.RemoveAll();
 		}
 

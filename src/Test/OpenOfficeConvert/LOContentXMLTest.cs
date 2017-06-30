@@ -490,8 +490,6 @@ namespace Test.OpenOfficeConvert
 			Assert.IsTrue(returnValue1);
 			_validate.ClassName = "span_.en_definitionorgloss_sense_sensecontent_senses_entry_body";
 			content = "Second person; labialisation of the initial consonant of Class 3 verbs beginning with gg";
-			if (Common.UsingMonoVM)
-				content = "Second person; labialisation of the initial consonant of\n Class 3 verbs beginning with gg";
 
 			returnValue1 = _validate.ValidateOfficeTextNode(content, "span");
 			Assert.IsTrue(returnValue1);
@@ -4036,11 +4034,6 @@ namespace Test.OpenOfficeConvert
             string styleOutput = GetStyleOutput(file);
             string styleExpected = Common.PathCombine(_expectedPath, file + "styles.xml");
             string contentExpected = Common.PathCombine(_expectedPath, file + "content.xml");
-			if (Common.UsingMonoVM)
-			{
-				styleExpected = Common.PathCombine(_expectedlinuxPath, file + "styles.xml");
-				contentExpected = Common.PathCombine(_expectedlinuxPath, file + "content.xml");
-			}
             XmlAssert.Ignore(styleOutput, "//office:font-face-decls", new Dictionary<string, string> { { "office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0" } });
             XmlAssert.AreEqual(styleExpected, styleOutput, file + " in styles.xml");
             XmlAssert.AreEqual(contentExpected, _projInfo.TempOutputFolder, file + " in content.xml");
@@ -4288,10 +4281,6 @@ namespace Test.OpenOfficeConvert
 			const string file = "NewGuidewordStyle2";
 			string styleOutput = GetStyleOutput(file);
 			string contentExpected = Common.PathCombine(_expectedPath, file + "content.xml");
-			if (Common.UsingMonoVM)
-			{
-				contentExpected = Common.PathCombine(_expectedlinuxPath, file + "content.xml");
-			}
 			XmlAssert.Ignore(styleOutput, "//office:font-face-decls", new Dictionary<string, string> { { "office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0" } });
 			XmlAssert.AreEqual(contentExpected, _projInfo.TempOutputFolder, file + " in content.xml");
 		}
@@ -4332,8 +4321,6 @@ namespace Test.OpenOfficeConvert
 			const string file = "AnchorSpaceFlex83";
 			string styleOutput = GetStyleOutput(file);
 			string contentExpected = Common.PathCombine(_expectedPath, file + "content.xml");
-			if (Common.UsingMonoVM)
-				contentExpected = Common.PathCombine(_expectedlinuxPath, file + "content.xml");
 			XmlAssert.Ignore(styleOutput, "//office:font-face-decls", new Dictionary<string, string> { { "office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0" } });
 			XmlAssert.AreEqual(contentExpected, _projInfo.TempOutputFolder, file + " in content.xml");
 		}
@@ -4374,10 +4361,6 @@ namespace Test.OpenOfficeConvert
 			const string file = "SpaceAfterClosingBrace";
 			string styleOutput = GetStyleOutput(file);
 			string contentExpected = Common.PathCombine(_expectedPath, file + "content.xml");
-			if (Common.UsingMonoVM)
-			{
-				contentExpected = Common.PathCombine(_expectedlinuxPath, file + "content.xml");
-			}
 			XmlAssert.Ignore(styleOutput, "//office:font-face-decls", new Dictionary<string, string> { { "office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0" } });
 			XmlAssert.AreEqual(contentExpected, _projInfo.TempOutputFolder, file + " in content.xml");
 		}
@@ -4394,10 +4377,6 @@ namespace Test.OpenOfficeConvert
 			const string file = "ParentPrecedeSpace";
 			string styleOutput = GetStyleOutput(file);
 			string contentExpected = Common.PathCombine(_expectedPath, file + "content.xml");
-			if (Common.UsingMonoVM)
-			{
-				contentExpected = Common.PathCombine(_expectedlinuxPath, file + "content.xml");
-			}
 			XmlAssert.Ignore(styleOutput, "//office:font-face-decls", new Dictionary<string, string> { { "office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0" } });
 			XmlAssert.AreEqual(contentExpected, _projInfo.TempOutputFolder, file + " in content.xml");
 		}
@@ -4414,9 +4393,6 @@ namespace Test.OpenOfficeConvert
 			const string file = "PictureSpaceAfter";
 			string styleOutput = GetStyleOutput(file);
 			string contentExpected = Common.PathCombine(_expectedPath, file + "content.xml");
-			if(Common.UsingMonoVM)
-				contentExpected = Common.PathCombine(_expectedlinuxPath, file + "content.xml");
-
 			XmlAssert.Ignore(styleOutput, "//office:font-face-decls", new Dictionary<string, string> { { "office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0" } });
 			XmlAssert.AreEqual(contentExpected, _projInfo.TempOutputFolder, file + " in content.xml");
 		}
