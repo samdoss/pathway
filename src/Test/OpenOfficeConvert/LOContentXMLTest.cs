@@ -38,16 +38,13 @@ namespace Test.OpenOfficeConvert
         private string _inputPath;
         private string _outputPath;
         private string _expectedPath;
-	    private string _expectedlinuxPath;
-        ProgressBar _progressBar;
         private PublicationInformation _projInfo;
 
         private ValidateXMLFile _validate;
         private string _styleFile;
         private string _contentFile;
         private int _index = 0;
-        private bool _isLinux = false;
-        private static string _outputBasePath = string.Empty;
+        private static readonly string OutputBasePath = string.Empty;
         #endregion Private Variables
 
         #region SetUp
@@ -89,7 +86,7 @@ namespace Test.OpenOfficeConvert
             _contentFile = "content.xml";
 
             Param.LoadSettings();
-
+	        XmlAssert.TrimSpace = true;
         }
 
         private void EnableConfigurationSettings(string outputDirectory)
@@ -649,14 +646,6 @@ namespace Test.OpenOfficeConvert
             _projInfo.ProjectInputType = "Dictionary";
             GetStyleOutput(file);
             string contentExpected = Common.PathCombine(_expectedPath, file + "content.xml");
-            if (!_isLinux)
-            {
-                using (var p = Process.Start(Environment.GetEnvironmentVariable("COMSPEC"), string.Format("/c fc {0} {1} >{2}temp.txt", contentExpected, _projInfo.TempOutputFolder, file)))
-                {
-                    p.WaitForExit();
-                    Debug.Print(FileData.Get(file + "temp.txt"));
-                }
-            }
             XmlAssert.AreEqual(contentExpected, _projInfo.TempOutputFolder, file + " in content.xml");
         }
 
@@ -3911,14 +3900,6 @@ namespace Test.OpenOfficeConvert
             string contentExpected = Common.PathCombine(_expectedPath, file + "content.xml");
             XmlAssert.Ignore(styleOutput, "//office:font-face-decls", new Dictionary<string, string> { { "office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0" } });
             XmlAssert.AreEqual(styleExpected, styleOutput, file + " in styles.xml");
-            if (!_isLinux)
-            {
-                using (var p = Process.Start(Environment.GetEnvironmentVariable("COMSPEC"), string.Format("/c fc {0} {1} >{2}temp.txt", contentExpected, _projInfo.TempOutputFolder, file)))
-                {
-                    p.WaitForExit();
-                    Debug.Print(FileData.Get(file + "temp.txt"));
-                }
-            }
             XmlAssert.AreEqual(contentExpected, _projInfo.TempOutputFolder, file + " in content.xml");
         }
 
@@ -4515,8 +4496,8 @@ namespace Test.OpenOfficeConvert
         {
             // Verifying the input setting file and css file - in Input Folder
             string settingFile = inputType + "StyleSettings.xml";
-            string sFileName = Common.PathCombine(_outputBasePath, settingFile);
-            Common.ProgBase = _outputBasePath;
+            string sFileName = Common.PathCombine(OutputBasePath, settingFile);
+            Common.ProgBase = OutputBasePath;
 
             Param.LoadSettings();
             Param.SetValue(Param.InputType, inputType);
@@ -4528,8 +4509,8 @@ namespace Test.OpenOfficeConvert
 
             Param.LoadValues(sFileName);
             Param.SetLoadType = inputType;
-            Param.Value["OutputPath"] = _outputBasePath;
-            Param.Value["UserSheetPath"] = _outputBasePath;
+            Param.Value["OutputPath"] = OutputBasePath;
+            Param.Value["UserSheetPath"] = OutputBasePath;
         }
     }
 }
